@@ -1,4 +1,5 @@
-# mailing-list-filter
+# mailing-list-filter ![mailing-list-filter](dev/icon.png)
+
 Thunderbird mail filter search term using mailing lists (and not whole addressbooks).
 
 This addon was created because Thunderbird only allows filtering mail by whole Addressbooks, and not by mailing lists ([bug 180013](https://bugzilla.mozilla.org/show_bug.cgi?id=180013)).
