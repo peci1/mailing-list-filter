@@ -1,4 +1,4 @@
-# mailing-list-filter ![mailing-list-filter](dev/icon.png)
+# ![mailing-list-filter](dev/icon.png) mailing-list-filter
 
 Thunderbird mail filter search term using mailing lists (and not whole addressbooks).
 
