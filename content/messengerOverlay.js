@@ -32,7 +32,6 @@
   const Cc = Components.classes;
   const Ci = Components.interfaces;
   const Cu = Components.utils;
-  const Application = Cc["@mozilla.org/steel/application;1"].getService(Ci.steelIApplication);
 
   // global scope variables
   this.mailingListFilter = {};
@@ -86,7 +85,6 @@
           {
               let card = cards.getNext().QueryInterface(Ci.nsIAbCard);
               if (card.hasEmailAddress(address)) {
-                  Application.console.log("Mailing list filter found contact: " + card.getProperty("DisplayName", ""));
                   matches = true;
                   break;
               }
