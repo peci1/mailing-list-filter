@@ -41,10 +41,10 @@
       <stylesheet src="chrome://mailing-list-filter/skin/mailing-list-filter.css"/>
     </resources>
     <content>
-      <xul:menulist flex="1" class="search-value-menulist" xbl:inherits="disabled"
+      <menulist flex="1" class="search-value-menulist" xbl:inherits="disabled" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
                     oncommand="this.parentNode.setAttribute('value', this.value);this.parentNode.value=this.value">
-        <xul:menupopup class="search-value-popup" />
-      </xul:menulist> 
+        <menupopup class="search-value-popup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" />
+      </menulist> 
     </content>
     <implementation>
       <method name="addDirectories">
@@ -57,7 +57,7 @@
               if (dir instanceof Components.interfaces.nsIAbDirectory)
               {
                 // get children
-                let newMenuItem = document.createElement('menuitem');
+                let newMenuItem = document.createXULElement('menuitem');
                 let displayLabel = dir.dirName;
                 if (dir.isMailList)
                   displayLabel = "--" + displayLabel;
@@ -77,7 +77,7 @@
         <![CDATA[
           let menulist = document.getAnonymousNodes(this)[0];
           let value = this.getAttribute("value");
-          let menupopup = menulist.menupopup;
+          let menupopup = menulist.getElementsByTagName('menupopup')[0];
 
           // set the default to the personal address book
           if (!value || !value.length)
@@ -88,14 +88,11 @@
                                     .getService(Components.interfaces.nsIAbManager);
           this.addDirectories(abManager.directories, menupopup);
 
-          // scan all menupopup items to find the uri for the selection
-          let valueElements = menupopup.getElementsByAttribute('value', value);
-          if (valueElements && valueElements.length)
-            menulist.selectedItem = valueElements[0];
-          else
-            menulist.selectedIndex = 0;
+          menulist.setAttribute('value', value);
+        
+          this.setAttribute("value", value);
+          this.value = value;
 
-          this.value = menulist.selectedItem.getAttribute("value");
         ]]>
       </constructor>
     </implementation>
