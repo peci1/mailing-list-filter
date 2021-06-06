@@ -7,3 +7,5 @@ This addon was created because Thunderbird only allows filtering mail by whole A
 ## Usage
 
 The addon creates new search terms `Author from mailing list` and `Recipients from mailing list`; these search terms only allow operators `is in AB`/`is not in AB`, and the dropdown on the right contains address books and mailing lists, too... Et voila, mailing-list-based filtering works!
+
+Use version 1.x for old Thunderbirds, version 2.x for TB 68+ and version 3.x for TB 78+.
