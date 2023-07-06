@@ -68,9 +68,7 @@
       for (const address of addresses) {
         if (dir.isMailList) {
           // unfortunately cardForEmailAddress doesn't work as expected for mailing lists
-          let cards = dir.childCards;
-          while (cards.hasMoreElements()) {
-            let card = cards.getNext().QueryInterface(Ci.nsIAbCard);
+          for (let card of dir.childCards) {
             if (card.hasEmailAddress(address.email)) {
               matches = true;
               break;

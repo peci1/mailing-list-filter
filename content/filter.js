@@ -30,8 +30,6 @@
   const Ci = Components.interfaces;
   const Cc = Components.classes;
 
-  console.log("filter.js - start...");
-
   function patchMailingListSelector(es) {
     function updateSearchValue(menulist) {
       let target = this.closest(".search-value-custom");
@@ -49,8 +47,7 @@
 
     function addDirectories(aDirEnum, aMenupopup) {
       let uris = Array()
-      while (aDirEnum.hasMoreElements()) {
-        let dir = aDirEnum.getNext();
+      for (let dir of aDirEnum) {
         if (dir instanceof Ci.nsIAbDirectory)
         {
           // get children
@@ -63,11 +60,12 @@
           aMenupopup.appendChild(newMenuItem);
           uris.push(dir.URI)
           // recursive add of child mailing lists
-          let childNodes = dir.childNodes;
-          if (childNodes && childNodes.hasMoreElements()) {
-            let subUris = addDirectories(childNodes, aMenupopup);
-            uris = uris.concat(subUris);
-          }
+          let subUris = addDirectories(dir.childNodes, aMenupopup);
+          uris = uris.concat(subUris);
+        }
+        else {
+          console.log("Wrong type:");
+          console.log(dir);
         }
       }
       return uris;
@@ -119,70 +117,47 @@
 
   }
 
+  function patchSearchValue(es) {
+    let attType = es.getAttribute('searchAttribute'),
+      isPatched = false;
+    if (!attType.startsWith("mailing-list-filter@")) return;
+
+    switch(attType) {
+      case "mailing-list-filter@peci1.cz#mailingList":  // fall-through
+      case "mailing-list-filter@peci1.cz#mailingListRecipients":
+        isPatched = patchMailingListSelector(es)
+        break;
+      default:
+      // irrelevant
+    }
+    if (isPatched)
+      console.log("Mailing list filter patched: " + es);
+  }
+
 
   function callbackMailingListSearchCondition(mutationList, observer) {
     mutationList.forEach( (mutation) => {
       switch(mutation.type) {
         case 'childList':
-          /* One or more children have been added to and/or removed
-             from the tree.
-             (See mutation.addedNodes and mutation.removedNodes.) */
-          // iterate nodelist of added nodes
-          let nList = mutation.addedNodes;
-          nList.forEach( (el) => {
-            if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
-            let hbox = el.querySelectorAll("hbox.search-value-custom");
-            hbox.forEach ( (es) => {
-              let attType = es.getAttribute('searchAttribute'),
-                isPatched = false;
-              if (!attType.startsWith("mailing-list-filter@")) return;
-
-              console.log("Mutation observer (childList), check for patching: " + es);
-
-              switch(attType) {
-                case "mailing-list-filter@peci1.cz#mailingList":  // fall-through
-                case "mailing-list-filter@peci1.cz#mailingListRecipients":
-                  isPatched = patchMailingListSelector(es)
-                  break;
-                default:
-                // irrelevant
-              }
-              if (isPatched) {
-                console.log("mutation observer patched: " + es);
-              }
-
+          {
+            /* One or more children have been added to and/or removed
+               from the tree.
+               (See mutation.addedNodes and mutation.removedNodes.) */
+            // iterate nodelist of added nodes
+            let nList = mutation.addedNodes;
+            nList.forEach((el) => {
+              if (!el.querySelectorAll) return; // leave the anonymous function, this continues with the next forEach
+              let hbox = el.querySelectorAll("hbox.search-value-custom");
+              hbox.forEach(patchSearchValue);
             });
-          });
+          }
           break;
         case "attributes":
-        {
-          let es = mutation.target;
-          if (es.classList.contains("search-value-custom")) {
-            let attType = es.getAttribute('searchAttribute'),
-              isPatched = false;
-            console.log("attribute changed: " + attType);
-            if (!attType.startsWith("mailing-list-filter@")) return;
-
-            console.log("Mutation observer (attribute), check for patching: " + es);
-            // console.log(es);
-
-            switch(attType) {
-              case "mailing-list-filter@peci1.cz#mailingList":  // fall-through
-              case "mailing-list-filter@peci1.cz#mailingListRecipients":
-                if (es.firstChild) {
-                  if (es.firstChild.classList.contains("mlf-tag")) return;
-                  es.removeChild(es.firstChild);
-                }
-                isPatched = patchMailingListSelector(es)
-                break;
-              default:
-              // irrelevant
-            }
-            if (isPatched) {
-              console.log("mutation observer patched: "  + es);
-            }
+          {
+            let es = mutation.target;
+            if (es.classList.contains("search-value-custom"))
+              patchSearchValue(es);
           }
-        }
           break;
       }
     });
@@ -201,8 +176,10 @@
 
   let termList = window.document.querySelector('#searchTermList')
   window.mlf_observer.observe(termList, mlf_observerOptions);
+  // Trigger the callback for already existing elements
+  termList.querySelectorAll('.search-value-custom').forEach(patchSearchValue);
 
-  console.log("filter.js - Finished.");
+  console.log("Mailing List Filter loaded.");
 }
 
 function onLoad(activatedWhileWindowOpen) {
