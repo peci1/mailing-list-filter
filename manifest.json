@@ -3,13 +3,13 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "mailing-list-filter@peci1.cz",
-      "strict_min_version": "102.0",
-      "strict_max_version": "115.*"
+      "strict_min_version": "115.0",
+      "strict_max_version": "128.*"
     }
   },
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "author": "Martin Pecka",
   "homepage_url": "https://github.com/peci1/mailing-list-filter",
   "default_locale": "en",
@@ -19,18 +19,14 @@
   },
 
   "experiment_apis": {
-    "WindowListener": {
-      "schema": "content/api/WindowListener/schema.json",
+    "MailingListFilter": {
+      "schema": "api/MailingListFilter/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "paths": [["WindowListener"]],
-        "script": "content/api/WindowListener/implementation.js"
+        "paths": [["MailingListFilter"]],
+        "script": "api/MailingListFilter/implementation.js",
+        "events": ["startup"]
       }
     }
-  },
-  "background": {
-    "scripts": [
-      "background.js"
-    ]
   }
 }
