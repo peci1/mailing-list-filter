@@ -12,7 +12,8 @@ The addon creates new search terms `Author from mailing list` and `Recipients fr
 
 | Addon Version | Thunderbird Versions |
 |---------------|----------------------|
-| 4.*           | \>= 102, \>=115      |
+| 5.*           | \>= 128              |
+| 4.*           | 102 - 115            |
 | 3.*           | 78 - 101             |
 | 2.*           | 68 - 77              |
 | 1.*           | < 67                 |

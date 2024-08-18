@@ -30,6 +30,9 @@
     window.MailingListFilter = {}
     const self = window.MailingListFilter;
 
+    self._extensionEnabled = true;
+    Services.wm.getMostRecentWindow("mail:3pane").MailingListFilter._extensionEnabled = true;
+
     self._init = function(extension)
     {
       // is this search scope local, and therefore valid for db-based terms?
@@ -48,13 +51,16 @@
 
       self.match = function mailingList_match(aMsgHdr, aSearchValue, aSearchOp, searchRecipients)
       {
+        if (!Services.wm.getMostRecentWindow("mail:3pane").MailingListFilter._extensionEnabled)
+          return false;
+
         let dir = abManager.getDirectory(aSearchValue);
         if (!dir) {
           Cu.reportError("During filter action, can't find directory: " + aSearchValue);
           return;
         }
   
-        addressesString = aMsgHdr.author;
+        let addressesString = aMsgHdr.author;
         if (searchRecipients)
             addressesString = aMsgHdr.recipients + "," + aMsgHdr.ccList;
         let addresses = headerParser.parseEncodedHeader(addressesString);
@@ -83,7 +89,8 @@
   
       self.mailingList_getEnabled = self.mailingList_getAvailable = function (scope, op)
       {
-          return self._isLocalSearch(scope);
+          return Services.wm.getMostRecentWindow("mail:3pane").MailingListFilter._extensionEnabled
+              && self._isLocalSearch(scope);
       };
   
       self.mailingList_getAvailableOperators = function (scope)
@@ -135,11 +142,12 @@
     if (!filterService.getCustomTerm(self.mailingListRecipients.id)) {
       filterService.addCustomTerm(self.mailingListRecipients);
     }
+    console.log("MailingListFilter loaded.");
   }
   function onUnloadMessenger(window) {
-    // TODO: one could load a dummy implementation into window.MailingListFilter
-    //       on unload, so the filter is not broken, but does nothing once the
-    //       add-on is uninstalled.
+    window.MailingListFilter._extensionEnabled = false;
+    Services.wm.getMostRecentWindow("mail:3pane").MailingListFilter._extensionEnabled = false;
+    console.log("MailingListFilter unloaded.");
   }
 
   function onLoadFilter(window, extension) {
