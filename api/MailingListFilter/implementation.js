@@ -5,8 +5,8 @@
 // Using a closure to not leak anything but the API to the outside world.
 (function (exports) {
 
-  const { ExtensionSupport } = ChromeUtils.import(
-    'resource:///modules/ExtensionSupport.jsm'
+  const { ExtensionSupport } = ChromeUtils.importESModule(
+    'resource:///modules/ExtensionSupport.sys.mjs'
   );
 
   const headerParser = Cc["@mozilla.org/messenger/headerparser;1"]

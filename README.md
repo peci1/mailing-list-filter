@@ -10,8 +10,11 @@ The addon creates new search terms `Author from mailing list` and `Recipients fr
 
 ## Compatibility Table
 
+Please note that this addon is best support for the ESR release of Thunderbird (i.e. the slower, once-a-year updated version). If you're on Release channel, the addon may break with any update.
+
 | Addon Version | Thunderbird Versions |
 |---------------|----------------------|
+| 5.1+          | 136+                 |
 | 5.*           | \>= 128              |
 | 4.*           | 102 - 115            |
 | 3.*           | 78 - 101             |

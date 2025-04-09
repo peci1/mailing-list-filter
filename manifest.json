@@ -4,12 +4,12 @@
     "gecko": {
       "id": "mailing-list-filter@peci1.cz",
       "strict_min_version": "128.0",
-      "strict_max_version": "128.*"
+      "strict_max_version": "137.*"
     }
   },
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "author": "Martin Pecka",
   "homepage_url": "https://github.com/peci1/mailing-list-filter",
   "default_locale": "en",
